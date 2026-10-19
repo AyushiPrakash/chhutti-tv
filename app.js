@@ -357,14 +357,15 @@ var BULGE = 0.07;
 })();
 
 /* ---------- "Felt nostalgic?" hearts ---------- */
-// The shared heart total lives in api/hearts.js (a Vercel function backed by Upstash Redis). Where that isn't
-// available (local dev server, or the service is down) each visitor sees their own hearts.
+// The heart total lives only on the server, in api/hearts.js (a Vercel function backed by Upstash Redis); nothing is
+// kept in the browser. HEART_CAP limits how many hearts one visit can add. If the server can't be reached (local dev
+// server, or the service is down) the count shows just this visit's hearts.
 var HEART_API = '/api/hearts', HEART_CAP = 30;
 (function(){
   var btn = $('loveBtn'), num = $('loveN'), word = $('loveWord');
   var url = /^https?:/.test(location.protocol) ? HEART_API : '';
-  var mine = 0, total = null, last = 0;
-  try { mine = +localStorage.getItem('hearts') || 0; } catch (err) {}
+  var mine = 0, total = null, last = 0; // mine: hearts left during this visit
+  try { localStorage.removeItem('hearts'); } catch (err) {} // clear the per-browser count older versions saved
   function show(){
     var n = total === null ? mine : total;
     num.textContent = n.toLocaleString('en-IN'); word.textContent = n === 1 ? 'heart' : 'hearts';
@@ -372,7 +373,7 @@ var HEART_API = '/api/hearts', HEART_CAP = 30;
     btn.setAttribute('aria-label', btn.disabled ? 'Thanks for the hearts' : 'Leave a heart');
   }
   function readCount(j){ return j && typeof j.count === 'number' ? j.count : null; }
-  if (url) fetch(url).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ var v = readCount(j); if (v !== null) { total = Math.max(v, mine); show(); } }).catch(function(){});
+  if (url) fetch(url).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ var v = readCount(j); if (v !== null) { total = v + mine; show(); } }).catch(function(){});
   function float(){
     var b = btn.getBoundingClientRect(), h = document.createElement('span');
     h.className = 'love-float'; h.textContent = '\u2665'; h.setAttribute('aria-hidden', 'true');
@@ -383,12 +384,10 @@ var HEART_API = '/api/hearts', HEART_CAP = 30;
   btn.addEventListener('click', function(){
     var now = Date.now(); if (now - last < 250 || mine >= HEART_CAP) return; last = now;
     mine++; if (total !== null) total++;
-    try { localStorage.setItem('hearts', mine); } catch (err) {}
     float(); show(); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
     if (url) fetch(url, { method: 'POST' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ var v = readCount(j); if (v !== null && v > (total || 0)) { total = v; show(); } }).catch(function(){});
   });
-  if (mine > 0) btn.classList.add('filled'); // the doodle stays coloured in once you've left a heart
-  btn.addEventListener('click', function(){ if (mine > 0) btn.classList.add('filled'); });
+  btn.addEventListener('click', function(){ if (mine > 0) btn.classList.add('filled'); }); // coloured in once you've left a heart
   show();
 })();
 
