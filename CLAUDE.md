@@ -16,6 +16,7 @@ A nostalgic Indian living room photo with a working CRT TV. A photo of a real re
   - `QUAD` holds the four screen corners in photo pixels (TL, TR, BL, BR). `fit()` scales the stage to cover the window and warps a 640x480 screen box onto the glass with `matrix3d`.
   - The YouTube IFrame API player, "live TV" offset (it joins each video partway through), static and sound effects made in the browser with Web Audio.
   - `ACTIONS` maps remote buttons (`data-act` on `.rk` hotspots in index.html) to behaviour. Two-digit channel entry works like a real TV.
+- `api/hearts.js`: the shared heart counter (Vercel function).
 - `assets/room.jpg`: the room. `assets/doily.png`: the crochet doily cut out so it sits in front of the video. `assets/remote.png`: the remote, cut out.
 
 ## Conventions
@@ -26,4 +27,6 @@ A nostalgic Indian living room photo with a working CRT TV. A photo of a real re
 - Hidden preload players are moved off the glass with a transform, never hidden with opacity or visibility: the curved-glass SVG filter ignores opacity on iframes, and browsers pause hidden videos.
 
 ## Deploying
-Push to `main` on GitHub (AyushiPrakash/chhutti-tv). GitHub Pages serves it at https://chhuttitv.ayushiprakash.com (the `CNAME` file holds the domain; DNS is a Cloudflare CNAME `chhuttitv` to `ayushiprakash.github.io`). `assets/previous/` holds local image backups and is not pushed.
+Push to `main` on GitHub (AyushiPrakash/chhutti-tv). Vercel (project `chhutti-tv`) deploys every push and serves it at https://chhuttitv.ayushiprakash.com. DNS is in Cloudflare: CNAME `chhuttitv` to the Vercel target shown on the project's Domains page, proxy off (grey cloud). No build step; Vercel serves the files as they are. `assets/previous/` holds local image backups and is not pushed.
+
+The shared heart count is `api/hearts.js`, a Vercel function using Upstash Redis (connected from the project's Storage tab). Nothing about hearts is stored in the browser. Locally (`serve.py`) the API doesn't exist, so the count shows only that visit's hearts.
