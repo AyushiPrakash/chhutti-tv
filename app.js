@@ -436,17 +436,14 @@ var HEART_WORKSPACE = '', HEART_COUNTER = 'nostalgia-hearts', HEART_CAP = 30;
     r.classList.toggle('moved', Math.abs(dx) > 1 || Math.abs(dy) > 1 || Math.abs(rot - HOME_ROT) > 0.01);
   }
   function home(){ return { x: r.offsetLeft + r.offsetWidth / 2, y: r.offsetTop + r.offsetHeight / 2 }; }
-  function save(){ try { localStorage.setItem('remotePos', JSON.stringify([dx, dy, rot])); } catch (err) {} }
   function clamp(){ // keep a good chunk of the remote on screen
     var b = r.getBoundingClientRect(), m = 80;
     if (b.right < m) dx += m - b.right; if (b.left > innerWidth - m) dx -= b.left - (innerWidth - m);
     if (b.bottom < m) dy += m - b.bottom; if (b.top > innerHeight - m) dy -= b.top - (innerHeight - m);
     place();
   }
-  try {
-    var saved = JSON.parse(localStorage.getItem('remotePos') || 'null');
-    if (saved) { dx = saved[0]; dy = saved[1]; if (saved.length > 2) rot = saved[2]; }
-  } catch (err) {}
+  // every visit starts with the remote in its home spot; drop any position saved by older versions
+  try { localStorage.removeItem('remotePos'); } catch (err) {}
   place(); requestAnimationFrame(clamp);
 
   function step(t){
@@ -475,14 +472,14 @@ var HEART_WORKSPACE = '', HEART_COUNTER = 'nostalgia-hearts', HEART_CAP = 30;
     dx = cx - h.x; dy = cy - h.y; rot += fw * k;
     var f = Math.pow(1 - FLICK_DRAG, k); fv.x *= f; fv.y *= f; fw *= f;
     place();
-    if (Math.hypot(fv.x, fv.y) < 0.05 && Math.abs(fw) < 0.0005) { fraf = 0; clamp(); save(); return; }
+    if (Math.hypot(fv.x, fv.y) < 0.05 && Math.abs(fw) < 0.0005) { fraf = 0; clamp(); return; }
     fraf = requestAnimationFrame(glide);
   }
   function capped(v, m){ return Math.max(-m, Math.min(m, v)); }
 
   r.addEventListener('pointerdown', function(e){
     e.preventDefault(); if (window.getSelection) getSelection().removeAllRanges();
-    if (fraf) { cancelAnimationFrame(fraf); fraf = 0; save(); } // catch it mid-glide
+    if (fraf) { cancelAnimationFrame(fraf); fraf = 0; } // catch it mid-glide
     down = true; moved = false; sx = e.clientX; sy = e.clientY;
   });
   window.addEventListener('pointermove', function(e){
@@ -531,7 +528,6 @@ var HEART_WORKSPACE = '', HEART_COUNTER = 'nostalgia-hearts', HEART_CAP = 30;
     dx = 0; dy = 0; rot = HOME_ROT;
     r.classList.add('returning'); place();
     setTimeout(function(){ r.classList.remove('returning'); }, 650);
-    try { localStorage.removeItem('remotePos'); } catch (err) {}
   });
 })();
 

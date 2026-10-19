@@ -13,8 +13,8 @@
 <!-- loader: a little old TV showing static until the whole page (room photo, remote, fonts) has loaded -->
 <div class="loader" id="loader" aria-label="Loading" role="status">
   <div class="loader-tv">
-    <canvas class="loader-static" id="loaderStatic" width="420" height="430"></canvas>
-    <img src="assets/loader-tv.png?v=4" alt="">
+    <canvas class="loader-static" id="loaderStatic" width="390" height="380"></canvas>
+    <img src="assets/loader-tv.png?v=5" alt="">
   </div>
 </div>
 <script>
@@ -26,12 +26,12 @@
     x.putImageData(img, 0, 0); raf = requestAnimationFrame(frame);
   }
   frame();
-  // once everything has loaded, keep the static on screen for at least a moment, then fade into the room
+  // once everything has loaded, let the TV land and show static for a moment, then fade into the room
   window.addEventListener('load', function(){
     setTimeout(function(){
       L.classList.add('done');
       setTimeout(function(){ cancelAnimationFrame(raf); L.remove(); }, 700);
-    }, Math.max(0, 900 - (performance.now() - start)));
+    }, Math.max(0, 1700 - (performance.now() - start)));
   });
 })();
 </script>
