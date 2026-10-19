@@ -1,0 +1,134 @@
+/* Layout: the photo of the TV is the hero; a physical remote sits beside it (below on phones). */
+:root{
+  --room:#17110c; --room-glow:#3a2516; --ink:#efe3cf; --ink-dim:#b9a78c;
+  --plastic:#2a2a2e; --plastic-hi:#3a3a40; --key:#4a4a52; --red:#d8443a; --osd:#57ff7f;
+  --kid:'Reenie Beanie', 'Schoolbell', cursive; --hand:'Caveat', 'Segoe Print', cursive; --body:'Work Sans', system-ui, sans-serif; --mono:'VT323', ui-monospace, monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+html,body{height:100%;overflow:hidden}
+body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
+.scene{position:fixed;inset:0;overflow:hidden;background:#2a1a10}
+/* nothing on the page is text to select; stops a drag from painting the browser's blue selection over the room */
+.stage,.remote,.stage img{-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.stage{position:absolute;left:0;top:0;width:2752px;height:1536px;transform-origin:0 0}
+/* the room and TV set are dimmed a touch so the lit screen reads as the focus */
+.stage .room{display:block;width:2752px;height:1536px;max-width:none;filter:brightness(.72)}
+.doily{position:absolute;left:800px;top:430px;width:820px;height:170px;pointer-events:none;filter:brightness(.72)}
+.tvbtn{position:absolute;left:1352px;top:1052px;width:46px;height:24px;border-radius:6px;background:transparent;box-shadow:none;min-width:0;min-height:0;border:0;outline:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tvbtn:focus,.tvbtn:focus-visible{outline:none}
+.tvbtn:active{transform:none}
+.screen{position:absolute;left:0;top:0;width:640px;height:480px;transform-origin:0 0;border-radius:24px;background:#050506;box-shadow:inset 0 0 0 2px #1a1c1f}
+.pic{position:absolute;inset:3px;border-radius:22px / 20px;overflow:hidden;background:#0b0c0d}
+.pic.curved{filter:url(#bulge)}
+.glass-off{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%, #3a4244, #1d2224 70%, #0c0e0f);transition:opacity .25s}
+.glass-off::after{content:"";position:absolute;left:8%;top:6%;width:45%;height:35%;border-radius:50%;background:radial-gradient(ellipse, rgba(255,240,220,.10), rgba(255,240,220,0) 70%)}
+.tube{position:absolute;inset:0;transform:scaleY(.004) scaleX(0);filter:brightness(4);opacity:0}
+.tube.on{animation:poweron .9s cubic-bezier(.2,.8,.2,1) forwards}
+.tube.off{animation:poweroff .45s ease-in forwards}
+@keyframes poweron{0%{transform:scale(0,.004);opacity:1;filter:brightness(5)}35%{transform:scale(1,.004);filter:brightness(5)}70%{transform:scale(1,1.06);filter:brightness(1.8)}100%{transform:scale(1,1);opacity:1;filter:brightness(1)}}
+@keyframes poweroff{0%{transform:scale(1,1);opacity:1;filter:brightness(1)}55%{transform:scale(1,.006);filter:brightness(4)}85%{transform:scale(.02,.006);filter:brightness(6)}100%{transform:scale(0,0);opacity:0}}
+.video{position:absolute;top:-56px;left:-204px;width:1042px;height:586px;pointer-events:none;filter:brightness(1.12) saturate(1.2) contrast(1.08) blur(.5px)}
+.video iframe{width:100%;height:100%;border:0}
+#player{position:absolute;inset:0}
+/* background players are moved far off the glass rather than made transparent: the curved-glass filter
+   ignores transparency on embedded videos, which let a hidden channel's picture show through */
+.video .slot{position:absolute;inset:0;transform:translateX(4000px)}
+.video .slot.cur{transform:none}
+/* opacity, not visibility: browsers pause videos that are hidden, and YouTube shows its pause button again when they resume */
+.video{opacity:0}
+.tube.live .video{opacity:1}
+#noise{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .12s}
+#noise.show{opacity:1}
+.nosig{position:absolute;inset:0;background:transparent;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+.nosig.show{opacity:1}
+.nosig span{font-family:var(--mono);font-size:56px;letter-spacing:4px;color:var(--osd);text-shadow:0 0 6px rgba(87,255,127,.7), 2px 2px 0 #000}
+.tear{position:absolute;left:0;right:0;top:var(--gy,200px);height:46px;opacity:0;pointer-events:none;background:repeating-linear-gradient(180deg, rgba(255,255,255,.35) 0 2px, rgba(0,0,0,.3) 2px 5px);mix-blend-mode:screen}
+.tube.glitch .video,.tube.glitch .nosig{animation:glitch .25s steps(1) both}
+.tube.glitch .tear{animation:tear .25s linear both}
+@keyframes glitch{0%{transform:translate(4px,0);filter:brightness(1.12) saturate(1.35) contrast(1.12) blur(.5px)}30%{transform:translate(-3px,1px);filter:brightness(1.12) saturate(1.2) contrast(1.08) blur(.5px)}60%{transform:translate(2px,0);filter:brightness(1.12) saturate(1.2) blur(.5px)}100%{transform:none;filter:brightness(1.12) saturate(1.2) contrast(1.08) blur(.5px)}}
+@keyframes tear{0%{opacity:.45;transform:translateY(0) scaleY(.6)}50%{opacity:.3;transform:translateY(40px) scaleY(.4)}100%{opacity:0;transform:translateY(70px) scaleY(.3)}}
+.scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg, rgba(0,0,0,.35) 0 2px, transparent 2px 4px)}
+.roll{position:absolute;left:0;right:0;height:90px;top:0;pointer-events:none;background:linear-gradient(180deg, transparent, rgba(255,255,255,.06), transparent);animation:roll 7s linear infinite}
+@keyframes roll{from{transform:translateY(-100px)}to{transform:translateY(500px)}}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.65) 100%)}
+.glare{position:absolute;inset:0;pointer-events:none;background:linear-gradient(150deg, rgba(255,255,255,.16), transparent 40%)}
+.osd{position:absolute;font-family:var(--mono);color:var(--osd);text-shadow:0 0 6px rgba(87,255,127,.7), 2px 2px 0 #000;pointer-events:none;opacity:0;transition:opacity .2s}
+.osd.show{opacity:1}
+#osd-ch{right:60px;top:40px;font-size:64px;line-height:1;text-align:right}
+#osd-ch small{display:block;font-size:30px}
+#osd-vol{left:60px;right:60px;bottom:50px;font-size:34px;display:flex;align-items:center;gap:14px}
+#osd-vol .bars{display:flex;gap:5px}
+#osd-vol .bars i{display:block;width:14px;height:26px;background:var(--osd);box-shadow:0 0 6px rgba(87,255,127,.7)}
+#osd-vol .bars i.empty{background:transparent;border:2px solid rgba(87,255,127,.5);box-shadow:none}
+
+/* Remote */
+.remote{position:fixed;right:4vw;bottom:-16vh;height:50vh;aspect-ratio:362 / 908;transform:translate(var(--dx,0px),var(--dy,0px)) rotate(var(--rot,-11deg));cursor:grab;touch-action:none;transform-origin:50% 50%;z-index:5;
+  filter:sepia(.18) saturate(.92) brightness(.9) contrast(1.03) drop-shadow(-18px 28px 30px rgba(40,18,4,.55)) drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+.remote img{display:block;width:100%;height:100%;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.rk{position:absolute;padding:0;border:0;margin:0;background:transparent;box-shadow:none;min-width:0;min-height:0;border-radius:8px;cursor:pointer;transition:background .06s, transform .06s}
+.rk.round{border-radius:999px}
+.rk:hover{background:rgba(255,255,255,.08)}
+.rk:active,.rk.pressed{background:rgba(0,0,0,.32);transform:scale(.94)}
+.rk:focus-visible{outline:2px solid var(--osd);outline-offset:1px}
+.hint{position:fixed;left:max(20px, env(safe-area-inset-left, 0px));bottom:20px;margin:0;font-size:13px;color:var(--ink);background:rgba(25,14,6,.62);padding:8px 12px;border-radius:8px;max-width:min(60ch, calc(100% - 220px));line-height:1.5;transition:opacity .6s}
+.hint.fade{opacity:0}
+.hint kbd{font-family:var(--mono);font-size:16px;border:1px solid #5a4a3a;border-radius:4px;padding:0 5px}
+.now{font-family:var(--mono);font-size:22px;color:var(--ink-dim);min-height:1.2em;text-align:center}
+.remote.dragging{cursor:grabbing}
+/* glides home when the reset button is pressed */
+.remote.returning{transition:transform .6s cubic-bezier(.3,.8,.3,1)}
+/* reset icon: same dark chip as the keyboard hint, a little dimmer, no outline; hidden while the remote is in its starting spot; once moved it hangs just below the remote and travels with it */
+.remote-reset{position:absolute;left:50%;top:calc(100% + 8px);width:30px;height:30px;margin-left:-15px;padding:7px;border:0;border-radius:50%;
+  background:rgba(25,14,6,.45);color:rgba(239,227,207,.75);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s,color .2s}
+.remote-reset svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.remote.moved .remote-reset{opacity:1;pointer-events:auto}
+.remote.dragging .remote-reset{opacity:.4}
+.remote-reset:hover{background:rgba(25,14,6,.62);color:var(--ink)}
+.remote-reset:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.remote.dragging .rk{cursor:grabbing}
+@media (max-width:640px){.remote{height:40vh;right:2vw;bottom:-8vh}.hint{display:none}}
+.tube.bw .video{filter:brightness(1.12) grayscale(1) contrast(1.15) blur(.5px)}
+@media (prefers-reduced-motion:reduce){.roll{animation:none}.tube.glitch .video,.tube.glitch .nosig,.tube.glitch .tear{animation:none}.tube.on,.tube.off{animation-duration:.01s}}
+/* still film grain over the whole scene: grey noise centred on mid-grey in overlay mode, so colours and brightness stay the same on average */
+.grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:6;pointer-events:none;mix-blend-mode:overlay;opacity:.16;background-size:256px 256px}
+/* "Felt nostalgic?" heart box: a scrap torn off a sheet of white ruled notebook paper, one corner ripped away on a
+   jagged diagonal, written in a child's pencil hand, with a pencil heart that gets coloured in when tapped */
+.love{position:fixed;left:max(18px, env(safe-area-inset-left, 0px));bottom:22px;z-index:7;display:grid;grid-template-columns:auto auto;justify-content:start;align-items:center;column-gap:6px;margin:0;padding:30px 54px 12px 22px;
+  color:#3f4048;transform:rotate(-4deg);-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 5px rgba(20,10,4,.45)) drop-shadow(0 1px 1px rgba(20,10,4,.35))}
+/* the paper is an inline SVG (.love-paper in index.html): aged ruled notebook paper with grain, age spots and darker
+   edges, its top corner ripped away. The rip is roughened with an SVG displacement filter and backed by a frayed fibre band a shade darker than the paper. */
+.love-paper{position:absolute;inset:0;z-index:-1;width:100%;height:100%;overflow:visible;pointer-events:none}
+.love p{margin:0}
+/* soft graphite: grey, a touch see-through, with a faint smudge */
+.love-q,.love-n{font-family:var(--kid);opacity:.86;text-shadow:0 0 .6px rgba(60,60,64,.7),.4px .3px 1px rgba(60,60,64,.25)}
+.love-q{grid-column:1 / -1;font-size:27px;line-height:24px;margin-bottom:2px}
+.love-btn{position:relative;flex:none;width:30px;height:27px;padding:0;border:0;background:none;cursor:pointer;transition:transform .12s}
+.love-btn svg{width:100%;height:100%;overflow:visible}
+.love-btn .ink{fill:none;stroke:#55545a;opacity:.85;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.love-btn .fill{fill:#e0364a;opacity:0;transform-box:fill-box;transform-origin:50% 55%}
+.love-btn.filled .fill{opacity:.9;animation:loveFill .32s cubic-bezier(.3,1.6,.5,1)}
+@keyframes loveFill{0%{opacity:0;transform:scale(.5)}100%{opacity:.9;transform:scale(1)}}
+.love-btn:hover{transform:rotate(-6deg) scale(1.08)}
+.love-btn:active{transform:scale(.92)}
+.love-btn.pop{animation:lovePop .34s ease-out}
+@keyframes lovePop{40%{transform:scale(1.25) rotate(-6deg)}100%{transform:scale(1)}}
+.love-btn:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:6px}
+.love-btn[disabled]{cursor:default}
+.love-n{font-size:25px;line-height:24px;color:#3f4048;min-width:3ch;white-space:nowrap}
+.love-n #loveN{display:inline-block;transform:rotate(-3deg) translateY(1px)}
+.love-float{position:fixed;z-index:8;pointer-events:none;color:#d42a3a;font-size:20px;text-shadow:0 1px 2px rgba(0,0,0,.25);animation:loveUp 1.2s ease-out forwards}
+@keyframes loveUp{0%{opacity:0;transform:translate(0,0) scale(.6) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translate(var(--drift,0px),-80px) scale(1.2) rotate(var(--spin,0deg))}}
+@media (prefers-reduced-motion:reduce){.love-float{animation-duration:.01s}.love-btn,.love-btn.pop,.love-btn .fill{transition:none;animation:none}}
+@media (max-width:640px){.love{bottom:16px;left:12px;padding:26px 44px 10px 18px}.love-q{font-size:24px}}
+/* the keyboard hint sits in the top-right corner until it fades */
+.hint{left:auto;right:max(20px, env(safe-area-inset-right, 0px));top:20px;bottom:auto}
+
+/* loader: the black NVN CRT seen from below and to the left (assets/loader-tv.png, screen cut out) with live static behind its glass, on the room's dark colour */
+.loader{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 45%, var(--room-glow), var(--room) 70%);transition:opacity .6s ease}
+.loader.done{opacity:0;pointer-events:none}
+.loader-tv{position:relative;width:min(56vw, 300px);aspect-ratio:1046 / 1076;filter:drop-shadow(0 18px 24px rgba(0,0,0,.55))}
+.loader-tv img{position:absolute;inset:0;width:100%;height:100%}
+.loader-static{position:absolute;inset:0;width:100%;height:100%;clip-path:polygon(12.6% 32.2%, 62.3% 8.9%, 64.4% 61.4%, 7.8% 76.4%);filter:contrast(1.1) brightness(.9)}
+@media (prefers-reduced-motion:reduce){.loader{transition:none}}

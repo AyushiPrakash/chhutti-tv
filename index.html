@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chhutti TV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=3">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Caveat:wght@600&family=Reenie+Beanie&family=Work+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css?v=121">
+</head>
+<body>
+<!-- loader: a little old TV showing static until the whole page (room photo, remote, fonts) has loaded -->
+<div class="loader" id="loader" aria-label="Loading" role="status">
+  <div class="loader-tv">
+    <canvas class="loader-static" id="loaderStatic" width="420" height="430"></canvas>
+    <img src="assets/loader-tv.png?v=4" alt="">
+  </div>
+</div>
+<script>
+(function(){
+  var L = document.getElementById('loader'), c = document.getElementById('loaderStatic'), x = c.getContext('2d');
+  var img = x.createImageData(c.width, c.height), d = img.data, raf = 0, start = performance.now();
+  function frame(){
+    for (var i = 0; i < d.length; i += 4) { var v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+    x.putImageData(img, 0, 0); raf = requestAnimationFrame(frame);
+  }
+  frame();
+  // once everything has loaded, keep the static on screen for at least a moment, then fade into the room
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      L.classList.add('done');
+      setTimeout(function(){ cancelAnimationFrame(raf); L.remove(); }, 700);
+    }, Math.max(0, 900 - (performance.now() - start)));
+  });
+})();
+</script>
+<div class="scene" id="scene">
+  <!-- curved CRT glass: a displacement map (drawn in app.js) bulges the picture out from the centre -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="bulge" filterUnits="userSpaceOnUse" x="0" y="0" width="634" height="474" color-interpolation-filters="sRGB">
+      <feImage id="bulgeMap" x="0" y="0" width="634" height="474" preserveAspectRatio="none" result="map"/>
+      <feDisplacementMap id="bulgeDisp" in="SourceGraphic" in2="map" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+  <div class="stage" id="stage">
+    <img class="room" id="tvimg" src="assets/room.jpg?v=110" alt="An Indian living room in warm afternoon light: a Sony CRT TV with a crochet doily on a glass cabinet, a calendar and framed photos on the wall">
+      <div class="screen" id="screen"><div class="pic">
+        <div class="glass-off" id="glassOff"></div>
+        <div class="tube" id="tube">
+          <div class="video"><div id="player"></div></div>
+          <canvas id="noise" width="160" height="120"></canvas>
+          <div class="nosig" id="nosig"><span>NO SIGNAL</span></div>
+          <div class="osd" id="osd-ch">CH 01</div>
+          <div class="osd" id="osd-vol">VOL <span class="bars" id="bars"></span></div>
+          <div class="tear"></div>
+          <div class="scan"></div>
+          <div class="roll"></div>
+        </div>
+        <div class="vignette"></div>
+        <div class="glare"></div>
+      </div></div>
+    <img class="doily" src="assets/doily.png?v=105" alt="">
+    <button class="tvbtn" id="tvbtn" aria-label="TV power button"></button>
+  </div>
+</div>
+<div class="remote" role="group" aria-label="TV remote">
+  <img src="assets/remote.png?v=5" alt="">
+  <button class="remote-reset" id="remoteReset" type="button" aria-label="Put the remote back" title="Put the remote back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg></button>
+  <button class="rk round" data-act="power" aria-label="Power" style="left:20.76%;top:7.98%;width:13.16%;height:5.25%"></button>
+  <button class="rk round" data-act="prev" aria-label="Recall last channel" style="left:68.10%;top:7.78%;width:13.16%;height:5.25%"></button>
+  <button class="rk round" data-act="info" aria-label="Show channel" style="left:21.27%;top:16.06%;width:12.15%;height:2.42%"></button>
+  <button class="rk round" data-act="bw" aria-label="Black and white picture" style="left:37.47%;top:16.06%;width:12.15%;height:2.42%"></button>
+  <button class="rk round" data-act="prev" aria-label="Previous channel" style="left:53.42%;top:16.06%;width:12.15%;height:2.42%"></button>
+  <button class="rk round" data-act="mute" aria-label="Mute" style="left:69.37%;top:16.06%;width:12.15%;height:2.42%"></button>
+  <button class="rk round" data-act="n1" aria-label="1" style="left:21.27%;top:20.91%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n2" aria-label="2" style="left:43.04%;top:20.91%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n3" aria-label="3" style="left:64.56%;top:20.91%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n4" aria-label="4" style="left:21.27%;top:26.57%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n5" aria-label="5" style="left:43.04%;top:26.57%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n6" aria-label="6" style="left:64.56%;top:26.57%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n7" aria-label="7" style="left:21.27%;top:32.32%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n8" aria-label="8" style="left:43.04%;top:32.32%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n9" aria-label="9" style="left:64.56%;top:32.32%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="none" aria-label="Dot" style="left:21.27%;top:37.98%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="n0" aria-label="0" style="left:43.04%;top:37.98%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="prev" aria-label="Previous channel" style="left:64.56%;top:37.98%;width:16.71%;height:3.84%"></button>
+  <button class="rk round" data-act="mute" aria-label="Mute" style="left:21.27%;top:44.65%;width:9.62%;height:3.84%"></button>
+  <button class="rk round" data-act="info" aria-label="Menu" style="left:71.14%;top:44.65%;width:9.62%;height:3.84%"></button>
+  <button class="rk" data-act="volUp" aria-label="Volume up" style="left:41.27%;top:46.46%;width:20.25%;height:3.64%"></button>
+  <button class="rk" data-act="volDown" aria-label="Volume down" style="left:41.27%;top:58.38%;width:20.25%;height:3.64%"></button>
+  <button class="rk" data-act="chDown" aria-label="Channel down" style="left:28.61%;top:50.30%;width:10.13%;height:7.68%"></button>
+  <button class="rk" data-act="chUp" aria-label="Channel up" style="left:64.05%;top:50.30%;width:10.13%;height:7.68%"></button>
+  <button class="rk round" data-act="info" aria-label="OK" style="left:44.05%;top:51.21%;width:14.68%;height:5.86%"></button>
+  <button class="rk round" data-act="none" aria-label="Sleep" style="left:21.27%;top:60.00%;width:9.62%;height:3.84%"></button>
+  <button class="rk round" data-act="reset" aria-label="Reset" style="left:71.65%;top:60.00%;width:9.62%;height:3.84%"></button>
+  <button class="rk round" data-act="chDown" aria-label="Previous" style="left:21.77%;top:66.97%;width:12.66%;height:3.23%"></button>
+  <button class="rk round" data-act="play" aria-label="Play" style="left:38.23%;top:66.87%;width:26.33%;height:3.43%"></button>
+  <button class="rk round" data-act="chUp" aria-label="Next" style="left:69.11%;top:66.97%;width:12.66%;height:3.23%"></button>
+  <button class="rk round" data-act="none" aria-label="Mode" style="left:21.77%;top:72.22%;width:12.66%;height:3.23%"></button>
+  <button class="rk round" data-act="pause" aria-label="Pause" style="left:45.06%;top:72.22%;width:12.66%;height:3.23%"></button>
+  <button class="rk round" data-act="pause" aria-label="Stop" style="left:68.35%;top:72.22%;width:12.66%;height:3.23%"></button>
+  <button class="rk round" data-act="none" aria-label="Repeat" style="left:21.77%;top:77.58%;width:12.66%;height:3.23%"></button>
+  <button class="rk round" data-act="none" aria-label="Function" style="left:68.35%;top:77.58%;width:12.66%;height:3.23%"></button>
+</div>
+<span id="now" hidden>TV is off</span>
+<aside class="love" id="love" aria-label="Leave a heart">
+  <svg class="love-paper" viewBox="0 0 224 117" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <!-- torn edge: a low-frequency wobble for the paper, and a fine one that frays the pale fibre band -->
+      <filter id="tearBody" x="-5%" y="-10%" width="110%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="3" seed="4"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter>
+      <filter id="tearFibre" x="-8%" y="-15%" width="116%" height="130%"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="9" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter>
+      <!-- paper grain: fine brown speckle -->
+      <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="2"/><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .32  0 0 0 0 .18  0 0 0 .28 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+      <radialGradient id="age" cx="50%" cy="50%" r="70%"><stop offset="55%" stop-color="#8a5a20" stop-opacity="0"/><stop offset="100%" stop-color="#8a5a20" stop-opacity=".35"/></radialGradient>
+      <mask id="paperMask" maskUnits="userSpaceOnUse" x="-10" y="-10" width="244" height="137"><path d="M0.0 21.1 L3.0 20.4 L5.8 19.0 L9.0 19.7 L12.0 19.1 L15.0 18.4 L18.1 18.9 L21.0 17.6 L24.0 16.9 L26.9 16.0 L30.2 17.2 L33.1 16.2 L36.2 16.3 L38.9 14.1 L41.9 13.9 L45.2 14.9 L47.8 12.2 L50.8 11.8 L53.9 12.1 L57.0 11.7 L60.1 12.3 L63.2 12.2 L66.1 10.5 L69.3 11.1 L72.4 10.3 L75.4 9.7 L78.6 9.7 L81.5 8.2 L84.6 7.8 L87.6 6.4 L90.8 6.7 L93.8 5.9 L97.0 5.7 L100.0 4.9 L103.1 4.9 L106.3 4.8 L109.1 2.6 L112.2 2.2 L115.4 2.1 L118.5 1.9 L121.7 2.4 L124.8 2.1 L127.9 1.5 L131.1 1.5 L134.4 -0.5 L136.4 2.0 L139.5 3.0 L141.3 5.7 L144.7 6.4 L147.0 8.5 L148.3 12.0 L151.1 13.4 L154.6 13.9 L156.5 16.6 L159.7 17.4 L161.4 20.4 L163.2 22.7 L166.3 24.1 L168.6 26.2 L169.8 29.3 L171.5 31.9 L174.0 33.8 L177.2 35.1 L178.9 37.8 L179.9 41.1 L182.2 43.2 L184.0 45.7 L186.0 48.1 L189.4 49.2 L190.3 52.6 L193.1 54.2 L194.9 56.7 L196.6 59.5 L199.6 60.9 L200.6 64.2 L203.6 65.7 L204.7 68.8 L207.3 70.6 L209.0 73.3 L211.2 75.5 L214.5 76.7 L216.3 79.3 L217.4 82.4 L220.6 83.8 L221.4 87.2 L224.0 89.0 L224 117 L0 117 Z" fill="#fff" filter="url(#tearBody)"/></mask>
+    </defs>
+    <!-- frayed fibres where the paper was ripped, a shade darker than the paper -->
+    <path d="M-0.6 17.0 L2.1 14.5 L5.2 15.0 L8.6 16.9 L11.0 12.5 L14.5 15.4 L17.5 14.7 L20.1 12.0 L23.4 13.5 L26.4 13.2 L29.6 13.6 L32.6 13.1 L35.2 10.5 L38.5 11.5 L41.2 9.4 L44.4 10.0 L47.3 9.1 L50.0 6.5 L53.3 8.1 L56.2 7.2 L59.0 5.4 L62.5 7.9 L65.6 7.6 L68.2 3.8 L71.4 3.7 L74.8 5.7 L78.0 5.5 L80.7 2.6 L83.6 1.3 L87.2 4.0 L89.8 0.3 L92.9 0.1 L96.2 0.8 L99.4 1.2 L102.7 2.1 L105.8 1.9 L108.3 -2.6 L111.9 0.0 L114.7 -2.5 L118.0 -1.0 L120.7 -3.9 L124.0 -3.4 L127.3 -2.6 L130.4 -2.6 L137.2 -4.4 L138.0 -0.3 L141.0 1.0 L144.3 1.7 L147.6 2.5 L149.5 5.1 L151.1 8.2 L155.2 7.7 L155.9 12.1 L157.9 14.6 L161.1 15.5 L164.0 16.7 L165.9 20.3 L168.4 22.3 L171.1 24.0 L173.8 25.7 L174.4 29.3 L177.2 31.0 L181.0 31.7 L183.4 33.8 L184.4 37.0 L186.6 39.2 L188.3 41.9 L188.9 45.5 L190.7 48.1 L192.7 50.4 L197.7 50.1 L199.0 53.1 L202.0 54.6 L201.0 59.7 L205.0 60.2 L206.6 62.9 L209.5 64.5 L210.2 68.0 L214.5 68.4 L213.5 73.4 L217.2 74.3 L219.9 76.1 L222.5 77.9 L224.0 80.7 L226.0 83.1 L227.2 85.8 L224 117 L0 117 Z" fill="#cdbb93" filter="url(#tearFibre)"/>
+    <g mask="url(#paperMask)">
+      <rect x="-10" y="-10" width="244" height="137" fill="#e3d6b6"/>
+      <rect x="-10" y="-10" width="244" height="137" fill="#000" filter="url(#grain)"/>
+      <circle cx="48" cy="84" r="1.6" fill="#8c5a22" opacity=".35"/><circle cx="108" cy="47" r="1.2" fill="#8c5a22" opacity=".3"/><circle cx="182" cy="104" r="2" fill="#8c5a22" opacity=".28"/>
+      <g stroke="#5f7db0" stroke-opacity=".38" stroke-width=".9"><line x1="-10" y1="29.5" x2="234" y2="29.5"/><line x1="-10" y1="53.5" x2="234" y2="53.5"/><line x1="-10" y1="77.5" x2="234" y2="77.5"/><line x1="-10" y1="101.5" x2="234" y2="101.5"/></g>
+      <line x1="139" y1="-10" x2="139" y2="127" stroke="#9a6e86" stroke-opacity=".25" stroke-width=".9"/>
+      <rect x="-10" y="-10" width="244" height="137" fill="url(#age)"/>
+    </g>
+  </svg>
+  <p class="love-q">Felt nostalgic?<br>Leave a heart!!</p>
+  <button class="love-btn" id="loveBtn" type="button" aria-label="Leave a heart">
+    <svg viewBox="0 0 40 36" aria-hidden="true"><path class="fill" d="M20 33 C9 25 3 19 4 11.5 C5 5.5 11 3 15 5.5 C17.5 7 19 9 20 11 C21 9 22.6 6.8 25.2 5.4 C29.5 3.2 35.6 5.6 36 11.8 C36.5 19.5 30.5 25 20 33 Z"/><path class="ink" d="M20.5 32.2 C10 24.8 3.6 19 4.4 11.6 C5.1 5.9 11.2 3.4 15.2 5.9 C17.6 7.4 19.1 9.3 20.1 11.4 C21.2 9.1 22.9 6.9 25.4 5.6 C29.7 3.5 35.4 5.9 35.7 12 C36.1 19.4 30.2 24.9 20.3 32.6 M19.6 32.8 C21 31.8 21.3 31.6 21.6 31.2"/></svg>
+  </button>
+  <p class="love-n"><span id="loveN">0</span> <span id="loveWord">hearts</span></p>
+</aside>
+<div class="grain" id="grain" aria-hidden="true"></div>
+<p class="hint" id="hint">Press the red POWER button on the remote.<br>Keyboard: <kbd>P</kbd> power, <kbd>&larr;</kbd><kbd>&rarr;</kbd> channels, <kbd>&uarr;</kbd><kbd>&darr;</kbd> volume, <kbd>M</kbd> mute.</p>
+
+<script src="channels.js?v=105"></script>
+<script src="app.js?v=109"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
