@@ -26,4 +26,4 @@ A nostalgic Indian living room photo with a working CRT TV. A photo of a real re
 - Hidden preload players are moved off the glass with a transform, never hidden with opacity or visibility: the curved-glass SVG filter ignores opacity on iframes, and browsers pause hidden videos.
 
 ## Deploying
-Drag this folder onto the site's Deploys page in Netlify (site: sweet-mochi-d4aeed).
+Push to `main` on GitHub (AyushiPrakash/chhutti-tv). GitHub Pages serves it at https://chhuttitv.ayushiprakash.com (the `CNAME` file holds the domain; DNS is a Cloudflare CNAME `chhuttitv` to `ayushiprakash.github.io`). `assets/previous/` holds local image backups and is not pushed.
