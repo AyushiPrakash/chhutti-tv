@@ -53,8 +53,9 @@ var CHANNELS = [
   { id: '8V2UAip5Kww', title: 'Harry and His Bucket Full of Dinosaurs, Season 1' },
   { id: 'co5xrfrFXmE', title: 'Bas Karo Henry (Horrid Henry, Hindi)' },
   { id: 'i_ejECJUIBw', title: 'Baby Looney Tunes, Ep. 1, Part 1 (Hindi)' },
-  { id: 'WTybBd9Ki_o', title: 'Backyard Science, S2 Ep. 36: How to Make an Erupting Volcano' },
+  { id: '3JJs23s9jj0', title: 'SpongeBob SquarePants: Reef Blower (1999)' },
   { id: '9nYnkHHmXPM', title: 'Power Rangers S.P.D., Ep. 15 (Hindi)' },
   { id: 'fLPS4sIpYh0', title: 'Shaun the Sheep, Season 4, Eps. 19 to 24' },
-  { id: 'LJlCLDNkIxw', title: "Mickey Mouse: Mickey's Parrot (1938)" }
+  { id: 'LJlCLDNkIxw', title: "Mickey Mouse: Mickey's Parrot (1938)" },
+  { id: 'KSzRiA4xeEA', title: 'Kochikame: Hindi title song' }
 ];

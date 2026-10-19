@@ -310,7 +310,7 @@ var ACTIONS = {
   info: function(){ if (on) { click(); showCh(); showVol(); } else click(); },
   prev: function(){ if (on) { click(); tune(prevCh); } else click(); },
   bw: function(){ click(); if (!on) return; bw = !bw; $('tube').classList.toggle('bw', bw); },
-  reset: function(){ click(); if (!on) return; vol = 6; muted = false; bw = false; $('tube').classList.remove('bw'); applyVolume(); showVol(); },
+  reset: function(){ click(); remoteHome(); if (!on) return; vol = 6; muted = false; bw = false; $('tube').classList.remove('bw'); applyVolume(); showVol(); },
   play: function(){ click(); if (on && cur && userPaused) { userPaused = false; cur.playStart = 0; setStatic(true); tuneStart = Date.now(); cur.yt.playVideo(); } }, // snow until YouTube's button fades
   pause: function(){ click(); if (on && cur && !userPaused) { userPaused = true; cur.yt.pauseVideo(); } },
   none: click
@@ -357,12 +357,12 @@ var BULGE = 0.07;
 })();
 
 /* ---------- "Felt nostalgic?" hearts ---------- */
-// A shared heart total needs a counter that lives online. Create a free account at counterapi.dev, then put your
-// workspace name in HEART_WORKSPACE. Until then (or if the service is unreachable) each visitor sees their own hearts.
-var HEART_WORKSPACE = '', HEART_COUNTER = 'nostalgia-hearts', HEART_CAP = 30;
+// The shared heart total lives in api/hearts.js (a Vercel function backed by Upstash Redis). Where that isn't
+// available (local dev server, or the service is down) each visitor sees their own hearts.
+var HEART_API = '/api/hearts', HEART_CAP = 30;
 (function(){
   var btn = $('loveBtn'), num = $('loveN'), word = $('loveWord');
-  var url = HEART_WORKSPACE ? 'https://api.counterapi.dev/v2/' + HEART_WORKSPACE + '/' + HEART_COUNTER : '';
+  var url = /^https?:/.test(location.protocol) ? HEART_API : '';
   var mine = 0, total = null, last = 0;
   try { mine = +localStorage.getItem('hearts') || 0; } catch (err) {}
   function show(){
@@ -371,11 +371,7 @@ var HEART_WORKSPACE = '', HEART_COUNTER = 'nostalgia-hearts', HEART_CAP = 30;
     btn.disabled = mine >= HEART_CAP;
     btn.setAttribute('aria-label', btn.disabled ? 'Thanks for the hearts' : 'Leave a heart');
   }
-  function readCount(j){ // tolerate the counter service's response shapes
-    if (!j) return null; var d = j.data || j;
-    var v = d.up_count !== undefined ? d.up_count : d.count !== undefined ? d.count : d.value;
-    return typeof v === 'number' ? v : null;
-  }
+  function readCount(j){ return j && typeof j.count === 'number' ? j.count : null; }
   if (url) fetch(url).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ var v = readCount(j); if (v !== null) { total = Math.max(v, mine); show(); } }).catch(function(){});
   function float(){
     var b = btn.getBoundingClientRect(), h = document.createElement('span');
@@ -389,7 +385,7 @@ var HEART_WORKSPACE = '', HEART_COUNTER = 'nostalgia-hearts', HEART_CAP = 30;
     mine++; if (total !== null) total++;
     try { localStorage.setItem('hearts', mine); } catch (err) {}
     float(); show(); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
-    if (url) fetch(url + '/up').then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ var v = readCount(j); if (v !== null && v > (total || 0)) { total = v; show(); } }).catch(function(){});
+    if (url) fetch(url, { method: 'POST' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ var v = readCount(j); if (v !== null && v > (total || 0)) { total = v; show(); } }).catch(function(){});
   });
   if (mine > 0) btn.classList.add('filled'); // the doodle stays coloured in once you've left a heart
   btn.addEventListener('click', function(){ if (mine > 0) btn.classList.add('filled'); });
@@ -519,16 +515,13 @@ var HEART_WORKSPACE = '', HEART_COUNTER = 'nostalgia-hearts', HEART_CAP = 30;
   // a drag that ends on a button must not press it
   r.addEventListener('click', function(e){ if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
   window.addEventListener('resize', clamp);
-  // reset button: glide the remote back to where it starts
-  var rb = document.getElementById('remoteReset');
-  rb.addEventListener('pointerdown', function(e){ e.stopPropagation(); }); // pressing it must not pick the remote up
-  rb.addEventListener('click', function(e){
-    e.stopPropagation();
+  // the remote's own RESET key (below MENU) glides it back to where it starts; see ACTIONS.reset
+  window.remoteHome = function(){
     if (fraf) { cancelAnimationFrame(fraf); fraf = 0; }
     dx = 0; dy = 0; rot = HOME_ROT;
     r.classList.add('returning'); place();
     setTimeout(function(){ r.classList.remove('returning'); }, 650);
-  });
+  };
 })();
 
 document.querySelectorAll('.rk').forEach(function(b){ b.addEventListener('click', function(){ ACTIONS[b.dataset.act](); }); });
