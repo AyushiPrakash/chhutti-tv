@@ -374,13 +374,13 @@ var BULGE = 0.07;
 // server, or the service is down) the count shows just this visit's hearts.
 var HEART_API = '/api/hearts', HEART_CAP = 30;
 (function(){
-  var btn = $('loveBtn'), num = $('loveN'), word = $('loveWord');
+  var btn = $('loveBtn'), num = $('loveN'), count = $('loveCount');
   var url = /^https?:/.test(location.protocol) ? HEART_API : '';
   var mine = 0, total = null, last = 0; // mine: hearts left during this visit
   try { localStorage.removeItem('hearts'); } catch (err) {} // clear the per-browser count older versions saved
   function show(){
     var n = total === null ? mine : total;
-    num.textContent = n.toLocaleString('en-IN'); word.textContent = n === 1 ? 'heart' : 'hearts';
+    num.textContent = n.toLocaleString('en-IN'); count.setAttribute('aria-label', n + (n === 1 ? ' heart' : ' hearts'));
     btn.disabled = mine >= HEART_CAP;
     btn.setAttribute('aria-label', btn.disabled ? 'Thanks for the hearts' : 'Leave a heart');
   }

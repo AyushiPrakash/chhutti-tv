@@ -88,7 +88,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:6;pointer-events:none;mix-blend-mode:overlay;opacity:.16;background-size:256px 256px}
 /* "Felt nostalgic?" heart box: a scrap torn off a sheet of white ruled notebook paper, one corner ripped away on a
    jagged diagonal, written in a child's pencil hand, with a pencil heart that gets coloured in when tapped */
-.love{position:fixed;left:max(calc(1em + 10px), env(safe-area-inset-left, 0px));bottom:26px;z-index:7;display:grid;grid-template-columns:auto 1fr;justify-content:start;align-items:center;column-gap:.45em;margin:0;padding:2.1em 2.4em 1.6em 2em;
+.love{position:fixed;left:max(calc(1em + 10px), env(safe-area-inset-left, 0px));bottom:26px;z-index:7;display:grid;justify-content:start;margin:0;padding:2.1em 2.4em 1.6em 2em;
   font-size:clamp(9.5px, .6vw + 3px, 16px); /* everything on the note is in em, so it grows and shrinks with the screen */
   color:#2e3242;transform:rotate(-4deg);-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 5px rgba(20,10,4,.45)) drop-shadow(0 1px 1px rgba(20,10,4,.35))}
 /* the paper is an inline SVG (.love-paper in index.html): aged ruled notebook paper with grain, age spots and darker
@@ -97,9 +97,9 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .love[hidden]{display:none} /* the note can be switched off with the hidden attribute in index.html */
 .love p{margin:0}
 /* soft graphite: grey, a touch see-through, with a faint smudge */
-.love-q,.love-n,.love-by{font-family:var(--kid);opacity:.92;text-shadow:0 0 .7px rgba(40,44,60,.85),.4px .3px 1px rgba(40,44,60,.3)} /* pen pressed a little hard */
+.love-q,.love-by{font-family:var(--kid);opacity:.92;text-shadow:0 0 .7px rgba(40,44,60,.85),.4px .3px 1px rgba(40,44,60,.3)} /* pen pressed a little hard */
 .love-q{grid-column:1 / -1;font-size:2.35em;line-height:.95;margin-bottom:.08em}
-.love-btn{position:relative;flex:none;width:2.4em;height:2.15em;padding:0;border:0;background:none;cursor:pointer;transition:transform .12s}
+.love-btn{font:inherit;position:relative;display:inline-block;vertical-align:-.12em;margin:0 .02em 0 .06em;width:.95em;height:.86em;padding:0;border:0;background:none;cursor:pointer;transition:transform .12s}
 .love-btn svg{width:100%;height:100%;overflow:visible}
 .love-btn .ink{fill:none;stroke:#55545a;opacity:.85;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .love-btn .fill{fill:#e0364a;opacity:0;transform-box:fill-box;transform-origin:50% 55%}
@@ -111,7 +111,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 @keyframes lovePop{40%{transform:scale(1.25) rotate(-6deg)}100%{transform:scale(1)}}
 .love-btn:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:6px}
 .love-btn[disabled]{cursor:default}
-.love-n{font-size:2.1em;line-height:1;color:#3a3e4e;min-width:3ch;white-space:nowrap}
+.love-n{font-size:.5em;line-height:0;vertical-align:.75em;margin:0 .15em 0 .05em;white-space:nowrap} /* the count, written small beside the heart */
 .love-n #loveN{display:inline-block;transform:rotate(-3deg) translateY(1px)}
 .love-by{grid-column:1 / -1;font-size:1.4em;line-height:1.1;margin-top:.35em;color:#3a3e4e;opacity:.85} /* a quiet sign-off under the question and the hearts */
 .love-by a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
