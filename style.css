@@ -124,7 +124,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 /* stickers: a white die-cut edge (stacked white shadows) and a soft drop shadow, each slightly turned */
 .love-st{position:absolute;pointer-events:none;filter:drop-shadow(0 0 .05em #efe3c8) drop-shadow(0 0 .05em #efe3c8) drop-shadow(0 0 .06em #efe3c8) drop-shadow(0 .06em .08em rgba(30,18,8,.3)) saturate(.78) sepia(.18) brightness(.94)} /* toned into the room's warm light */
 .st-flower{left:.9em;top:.2em;width:2em;transform:rotate(-14deg)}
-.st-star{right:.7em;top:-.35em;width:2.6em;transform:rotate(12deg)}
+.st-star{right:4.4em;top:-.2em;width:2.6em;transform:rotate(12deg)}
 .st-smile{left:-1.5em;top:54%;width:2.9em;transform:rotate(-8deg)}
 .st-tv{right:-1.5em;bottom:-1.1em;width:3.9em;transform:rotate(8deg)}
 .love-float{position:fixed;z-index:8;pointer-events:none;color:#d42a3a;font-size:20px;text-shadow:0 1px 2px rgba(0,0,0,.25);animation:loveUp 1.2s ease-out forwards}
