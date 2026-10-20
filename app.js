@@ -133,12 +133,13 @@ function showVol(){
 }
 
 /* ---------- YouTube ---------- */
-// Three players: one shows the current channel, the other two keep the channels above and below
-// already playing (hidden and silent). YouTube draws its own pause button in the middle of the
+// Several players: one shows the current channel, the others keep the nearest channels above and below
+// already playing (hidden and silent): two each side on computers, one each side on phones to spare data. YouTube draws its own pause button in the middle of the
 // picture for about 3 seconds after a video starts, so a preloaded neighbour is clean by the time
 // you switch to it, and channel up/down is near instant. A channel that wasn't preloaded
 // (typed on the number keys) shows snow until its button has faded.
-var ICON_MS = 3200, MIN_SNOW = 120, SLOTS = 3;
+var ICON_MS = 3200, MIN_SNOW = 120;
+var REACH = matchMedia('(pointer: fine) and (min-width: 700px)').matches ? 2 : 1, SLOTS = 1 + 2 * REACH;
 var P = [], cur = null, readyCount = 0;
 // Join each show partway through, like live TV, by starting there directly.
 var DUR = {};
@@ -166,7 +167,9 @@ function noCaptions(s){ try { s.yt.unloadModule('captions'); s.yt.unloadModule('
 function onState(s, st){
   var PS = YT.PlayerState;
   // YouTube shows its button every time a video starts or resumes, so restart the clean timer on each start
-  if (st === PS.PLAYING && s.lastSt !== PS.PLAYING) s.playStart = Date.now();
+  // (resuming after a buffering stall shows no button, so a video that was already clean is clean again at once)
+  if (st === PS.PLAYING && s.lastSt !== PS.PLAYING) s.playStart = s.lastSt === PS.BUFFERING && s.wasClean ? Date.now() - ICON_MS : Date.now();
+  if (st !== PS.PLAYING && st !== PS.BUFFERING) s.wasClean = false;
   if (st !== PS.PLAYING) s.playStart = 0;
   s.lastSt = st;
   if (st === PS.PLAYING) {
@@ -183,17 +186,17 @@ function onState(s, st){
   }
 }
 function isLive(s){ return s && s.ready && s.yt.getPlayerState && s.yt.getPlayerState() === YT.PlayerState.PLAYING; }
-function clean(s){ return isLive(s) && s.playStart && Date.now() - s.playStart >= ICON_MS; }
+function clean(s){ var c = isLive(s) && s.playStart && Date.now() - s.playStart >= ICON_MS; if (c) s.wasClean = true; return c; }
 // a channel can list backup videos (alt) for when YouTube refuses to play the main one
 function ids(c){ return [CHANNELS[c].id].concat(CHANNELS[c].alt || []); }
 function loadInto(s, c){
-  s.ch = c; s.alt = 0; s.playStart = 0; s.loadedAt = Date.now(); s.tries = 0;
+  s.ch = c; s.alt = 0; s.playStart = 0; s.loadedAt = Date.now(); s.tries = 0; s.wasClean = false;
   s.yt.mute(); playId(s);
 }
 function playId(s){ var id = ids(s.ch)[s.alt]; s.id = id; s.end = s.alt === 0 ? CHANNELS[s.ch].end || 0 : 0; s.yt.loadVideoById({ videoId: id, startSeconds: startAt(id, s.end) }); }
 function nextAlt(s){
   if (s.ch < 0) return;
-  s.alt = (s.alt + 1) % ids(s.ch).length; s.tries = 0; s.loadedAt = Date.now(); s.playStart = 0;
+  s.alt = (s.alt + 1) % ids(s.ch).length; s.tries = 0; s.loadedAt = Date.now(); s.playStart = 0; s.wasClean = false;
   s.yt.mute(); playId(s);
 }
 function neighbour(c, d){
@@ -208,9 +211,15 @@ function claim(c, want){
   for (i = 0; i < P.length; i++) if (want.indexOf(P[i].ch) < 0) { loadInto(P[i], c); return P[i]; }
   return null;
 }
+// channel c and its nearest REACH neighbours on each side, nearest first
+function around(c){
+  var want = [c], up = c, down = c;
+  for (var k = 0; k < REACH; k++) { up = neighbour(up, 1); down = neighbour(down, -1); want.push(up, down); }
+  return want.filter(function(x, i, a){ return hasShow(x) && a.indexOf(x) === i; });
+}
 function preloadAround(c){
   if (!ready) return;
-  var want = [c, neighbour(c, 1), neighbour(c, -1)].filter(function(x){ return hasShow(x); });
+  var want = around(c);
   want.forEach(function(x){ claim(x, want); });
 }
 // before the TV is switched on, get the starting channel and its neighbours going
@@ -240,7 +249,7 @@ function tune(n){
     preloadAround(neighbour(ch, 1));
     return;
   }
-  var want = [ch, neighbour(ch, 1), neighbour(ch, -1)];
+  var want = around(ch);
   setCur(claim(ch, want));
   preloadAround(ch);
 }
@@ -259,7 +268,7 @@ setInterval(function(){
 setInterval(function(){
   if (!ready) return;
   P.forEach(function(s){
-    if (s.ch < 0 || s.playStart || s.tries >= 3 || Date.now() - s.loadedAt < 4000) return;
+    if (s.ch < 0 || s.playStart || s.tries >= 3 || Date.now() - s.loadedAt < 2500) return;
     var st = s.yt.getPlayerState();
     if (st === -1 || st === YT.PlayerState.CUED || st === undefined) { s.tries++; s.loadedAt = Date.now(); if (s.tries >= 2) nextAlt(s); else playId(s); }
   });
