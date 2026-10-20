@@ -41,8 +41,6 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .tube.live .video{opacity:1}
 #noise{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .12s}
 #noise.show{opacity:1}
-/* static over the whole picture that fades out as the signal settles (opacity set in app.js) */
-.iconcover{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none}
 .nosig{position:absolute;inset:0;background:transparent;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
 .nosig.show{opacity:1}
 .nosig span{font-family:var(--mono);font-size:56px;letter-spacing:4px;color:var(--osd);text-shadow:0 0 6px rgba(87,255,127,.7), 2px 2px 0 #000}

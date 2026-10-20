@@ -142,9 +142,7 @@ function showVol(){
 // picture for about 3 seconds after a video starts, so a preloaded neighbour is clean by the time
 // you switch to it, and channel up/down is near instant. A channel that wasn't preloaded
 // (typed on the number keys) shows snow until its button has faded.
-var ICON_MS = 3200, EARLY_MS = 1000, MIN_SNOW = 120;
-// The picture is shown EARLY_MS after a video starts; until ICON_MS, static over the picture (#iconCover) fades
-// away, like the signal settling, and hides YouTube's pause icon.
+var ICON_MS = 3200, MIN_SNOW = 120;
 var DESK = matchMedia('(pointer: fine) and (min-width: 700px)').matches;
 // REACH: channels kept running on each side. RECENT: channels you visited lately, kept running so going back is instant.
 var REACH = DESK ? 2 : 1, RECENT = DESK ? 3 : 0, SLOTS = 1 + 2 * REACH + RECENT, recent = [];
@@ -194,7 +192,7 @@ function onState(s, st){
   }
 }
 function isLive(s){ return s && s.ready && s.yt.getPlayerState && s.yt.getPlayerState() === YT.PlayerState.PLAYING; }
-function clean(s){ var c = isLive(s) && s.playStart && Date.now() - s.playStart >= EARLY_MS; if (c) s.wasClean = true; return c; }
+function clean(s){ var c = isLive(s) && s.playStart && Date.now() - s.playStart >= ICON_MS; if (c) s.wasClean = true; return c; }
 // a channel can list backup videos (alt) for when YouTube refuses to play the main one
 function ids(c){ return [CHANNELS[c].id].concat(CHANNELS[c].alt || []); }
 function loadInto(s, c){
@@ -269,18 +267,6 @@ setInterval(function(){
   if (!on || !cur || userPaused || !hasShow(ch) || $('tube').classList.contains('live')) return;
   if (Date.now() - tuneStart >= MIN_SNOW && clean(cur)) reveal();
 }, 50);
-// The signal settles: from EARLY_MS to ICON_MS after a start, static over the whole picture fades from strong to
-// nothing, which also buries YouTube's pause icon while it's showing.
-(function(){
-  var c = $('iconCover'), x = c.getContext('2d'), img = x.createImageData(c.width, c.height), d = img.data, last = -1;
-  (function draw(){
-    var t = on && cur && $('tube').classList.contains('live') && cur.playStart ? Date.now() - cur.playStart : Infinity;
-    var o = t < ICON_MS ? 0.82 * Math.pow(1 - Math.max(0, t - EARLY_MS) / (ICON_MS - EARLY_MS), 0.6) : 0;
-    if (o !== last) { c.style.opacity = o.toFixed(3); last = o; }
-    if (o > 0) { for (var i = 0; i < d.length; i += 4) { var v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } x.putImageData(img, 0, 0); }
-    requestAnimationFrame(draw);
-  })();
-})();
 // A channel with an end time loops back to the start when it gets there, like the end of a tape.
 setInterval(function(){
   if (!ready) return;
