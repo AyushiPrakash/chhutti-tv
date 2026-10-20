@@ -98,8 +98,9 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .love p{margin:0}
 /* soft graphite: grey, a touch see-through, with a faint smudge */
 .love-q,.love-by{font-family:var(--kid);opacity:.92;text-shadow:0 0 .7px rgba(40,44,60,.85),.4px .3px 1px rgba(40,44,60,.3)} /* pen pressed a little hard */
-.love-q{grid-column:1 / -1;font-size:2.35em;line-height:.95;margin-bottom:.08em}
-.love-btn{font:inherit;position:relative;display:inline-block;vertical-align:-.12em;margin:0 .02em 0 .06em;width:.95em;height:.86em;padding:0;border:0;background:none;cursor:pointer;transition:transform .12s}
+.love-q{grid-column:1 / -1;font-size:2.35em;line-height:1.2}
+.love-leave{word-spacing:-.12em;margin-right:.14em} /* 'Leave a' and the heart sit close, like one handwritten phrase */
+.love-btn{font:inherit;position:relative;display:inline-block;vertical-align:-.12em;margin:0 .02em 0 0;width:.95em;height:.86em;padding:0;border:0;background:none;cursor:pointer;transition:transform .12s}
 .love-btn svg{width:100%;height:100%;overflow:visible}
 .love-btn .ink{fill:none;stroke:#2e3242;opacity:.9;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
 .love-btn .fill{fill:#e0364a;opacity:0;transform-box:fill-box;transform-origin:50% 55%}
