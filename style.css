@@ -88,7 +88,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:6;pointer-events:none;mix-blend-mode:overlay;opacity:.16;background-size:256px 256px}
 /* "Felt nostalgic?" heart box: a scrap torn off a sheet of white ruled notebook paper, one corner ripped away on a
    jagged diagonal, written in a child's pencil hand, with a pencil heart that gets coloured in when tapped */
-.love{position:fixed;left:max(18px, env(safe-area-inset-left, 0px));bottom:22px;z-index:7;display:grid;grid-template-columns:auto auto;justify-content:start;align-items:center;column-gap:6px;margin:0;padding:30px 54px 12px 22px;
+.love{position:fixed;left:max(18px, env(safe-area-inset-left, 0px));bottom:22px;z-index:7;display:grid;grid-template-columns:auto 1fr;justify-content:start;align-items:center;column-gap:8px;margin:0;padding:30px 54px 12px 22px;
   color:#3f4048;transform:rotate(-4deg);-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 5px rgba(20,10,4,.45)) drop-shadow(0 1px 1px rgba(20,10,4,.35))}
 /* the paper is an inline SVG (.love-paper in index.html): aged ruled notebook paper with grain, age spots and darker
    edges, its top corner ripped away. The rip is roughened with an SVG displacement filter and backed by a frayed fibre band a shade darker than the paper. */
@@ -112,7 +112,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .love-btn[disabled]{cursor:default}
 .love-n{font-size:25px;line-height:24px;color:#3f4048;min-width:3ch;white-space:nowrap}
 .love-n #loveN{display:inline-block;transform:rotate(-3deg) translateY(1px)}
-.love-by{grid-column:1 / -1;font-size:19px;line-height:20px;margin-top:4px;color:#3f4048}
+.love-by{grid-column:1 / -1;font-size:17px;line-height:18px;margin-top:10px;color:#3f4048;opacity:.62} /* a quiet sign-off under the question and the hearts */
 .love-by a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .love-by a:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:4px}
 .love-float{position:fixed;z-index:8;pointer-events:none;color:#d42a3a;font-size:20px;text-shadow:0 1px 2px rgba(0,0,0,.25);animation:loveUp 1.2s ease-out forwards}
