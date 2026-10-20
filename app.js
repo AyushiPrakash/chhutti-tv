@@ -161,7 +161,7 @@ window.onYouTubeIframeAPIReady = function(){
       events: {
         onReady: function(){ s.ready = true; s.yt.mute(); if (++readyCount === SLOTS) { ready = true; if (on) tune(ch); else warm(); } },
         onStateChange: function(e){ onState(s, e.data); },
-        onError: function(){ s.playStart = 0; if (s === cur && on) { $('tube').classList.remove('live'); setStatic(true); } nextAlt(s); }
+        onError: function(e){ s.err = e && e.data; s.playStart = 0; if (s === cur && on) { $('tube').classList.remove('live'); setStatic(true); } nextAlt(s); }
       }
     });
     P.push(s);
@@ -552,3 +552,23 @@ document.addEventListener('keydown', function(e){
   else if (k === 'm' || k === 'M') toggleMute();
   else if (/^[0-9]$/.test(k)) ACTIONS['n' + k]();
 });
+
+/* ---------- diagnostics (only with ?debug in the address) ---------- */
+// A small panel showing what each YouTube player is doing, for tracking down playback problems on phones.
+if (/[?&]debug\b/.test(location.search)) (function(){
+  var box = document.createElement('pre');
+  box.style.cssText = 'position:fixed;left:6px;top:6px;z-index:999;margin:0;padding:6px 8px;max-width:calc(100% - 12px);white-space:pre-wrap;font:11px/1.35 ui-monospace,monospace;color:#cfe;background:rgba(0,0,0,.78);border-radius:6px;pointer-events:none';
+  document.body.appendChild(box);
+  var names = { '-1': 'unstarted', 0: 'ended', 1: 'playing', 2: 'paused', 3: 'buffering', 5: 'cued' };
+  setInterval(function(){
+    var lines = [navigator.userAgent.replace(/^Mozilla\/5\.0 /, '').slice(0, 120),
+      'YT api: ' + (window.YT && YT.Player ? 'loaded' : 'NOT loaded') + '  ready: ' + ready + ' (' + readyCount + '/' + SLOTS + ')',
+      'on: ' + on + '  ch: ' + (ch + 1) + '  live: ' + $('tube').classList.contains('live') + '  tab: ' + document.visibilityState];
+    P.forEach(function(p, i){
+      var st = '?', m = '?', t = '?';
+      try { st = p.yt.getPlayerState(); m = p.yt.isMuted(); t = Math.round(p.yt.getCurrentTime()); } catch (err) {}
+      lines.push('#' + i + (p === cur ? '*' : ' ') + ' ch ' + (p.ch + 1) + ' ' + (names[st] || st) + ' t=' + t + ' muted=' + m + (p.err ? ' ERR ' + p.err : '') + ' tries=' + p.tries);
+    });
+    box.textContent = lines.join('\n');
+  }, 500);
+})();
