@@ -88,8 +88,8 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:6;pointer-events:none;mix-blend-mode:overlay;opacity:.16;background-size:256px 256px}
 /* "Felt nostalgic?" heart box: a scrap torn off a sheet of white ruled notebook paper, one corner ripped away on a
    jagged diagonal, written in a child's pencil hand, with a pencil heart that gets coloured in when tapped */
-.love{position:fixed;left:max(calc(1.4em + 10px), env(safe-area-inset-left, 0px));bottom:26px;z-index:7;display:grid;grid-template-columns:auto 1fr;justify-content:start;align-items:center;column-gap:.5em;margin:0;padding:1.875em 3.375em .9em 1.375em;
-  font-size:clamp(13px, 1vw + 6px, 24px); /* everything on the note is in em, so it grows and shrinks with the screen */
+.love{position:fixed;left:max(calc(1em + 10px), env(safe-area-inset-left, 0px));bottom:26px;z-index:7;display:grid;grid-template-columns:auto 1fr;justify-content:start;align-items:center;column-gap:.5em;margin:0;padding:1.875em 3.375em .9em 1.375em;
+  font-size:clamp(11px, .75vw + 4px, 19px); /* everything on the note is in em, so it grows and shrinks with the screen */
   color:#3f4048;transform:rotate(-4deg);-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 5px rgba(20,10,4,.45)) drop-shadow(0 1px 1px rgba(20,10,4,.35))}
 /* the paper is an inline SVG (.love-paper in index.html): aged ruled notebook paper with grain, age spots and darker
    edges, its top corner ripped away. The rip is roughened with an SVG displacement filter and backed by a frayed fibre band a shade darker than the paper. */
@@ -118,15 +118,15 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .love-by a:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:4px}
 .love-by a{position:relative;z-index:1}
 /* masking tape across the top-left corner, with torn ends */
-.love-tape{position:absolute;left:-1.6em;top:-.2em;width:6.4em;height:1.7em;transform:rotate(-24deg);pointer-events:none;
-  background:linear-gradient(rgba(236,226,198,.78),rgba(222,208,174,.72));box-shadow:0 1px 2px rgba(40,25,10,.18);
+.love-tape{position:absolute;left:-1.2em;top:.1em;width:5.4em;height:1.25em;transform:rotate(-24deg);pointer-events:none;
+  background:linear-gradient(rgba(230,218,188,.55),rgba(214,198,162,.5));box-shadow:0 1px 2px rgba(40,25,10,.18);
   clip-path:polygon(0 8%,4% 0,8% 10%,12% 2%,88% 0,92% 9%,96% 1%,100% 10%,100% 90%,96% 100%,92% 91%,88% 99%,12% 100%,8% 90%,4% 98%,0 92%)}
 /* stickers: a white die-cut edge (stacked white shadows) and a soft drop shadow, each slightly turned */
-.love-st{position:absolute;pointer-events:none;filter:drop-shadow(0 0 .04em #fff) drop-shadow(0 0 .04em #fff) drop-shadow(0 0 .05em #fff) drop-shadow(0 .08em .1em rgba(30,18,8,.35))}
-.st-flower{left:-.3em;top:-1.3em;width:2.5em;transform:rotate(-12deg)}
-.st-star{right:4.2em;top:-.6em;width:2.8em;transform:rotate(14deg)}
-.st-smile{left:-1.7em;top:50%;width:2.9em;transform:rotate(-10deg)}
-.st-tv{right:-1em;bottom:-1em;width:3.8em;transform:rotate(9deg)}
+.love-st{position:absolute;pointer-events:none;filter:drop-shadow(0 0 .035em #f3ead6) drop-shadow(0 0 .035em #f3ead6) drop-shadow(0 0 .04em #f3ead6) drop-shadow(0 .06em .08em rgba(30,18,8,.3)) saturate(.78) sepia(.18) brightness(.94)} /* toned into the room's warm light */
+.st-flower{left:.1em;top:-.55em;width:1.6em;transform:rotate(-12deg)}
+.st-star{right:3.9em;top:-.2em;width:1.75em;transform:rotate(14deg)}
+.st-smile{left:-1.15em;top:62%;width:1.9em;transform:rotate(-10deg)}
+.st-tv{right:-.5em;bottom:-.75em;width:2.5em;transform:rotate(9deg)}
 .love-float{position:fixed;z-index:8;pointer-events:none;color:#d42a3a;font-size:20px;text-shadow:0 1px 2px rgba(0,0,0,.25);animation:loveUp 1.2s ease-out forwards}
 @keyframes loveUp{0%{opacity:0;transform:translate(0,0) scale(.6) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translate(var(--drift,0px),-80px) scale(1.2) rotate(var(--spin,0deg))}}
 @media (prefers-reduced-motion:reduce){.love-float{animation-duration:.01s}.love-btn,.love-btn.pop,.love-btn .fill{transition:none;animation:none}}
