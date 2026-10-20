@@ -97,7 +97,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .love[hidden]{display:none} /* the note can be switched off with the hidden attribute in index.html */
 .love p{margin:0}
 /* soft graphite: grey, a touch see-through, with a faint smudge */
-.love-q,.love-by{font-family:var(--hand);font-weight:400;opacity:.92;text-shadow:0 0 .4px rgba(40,44,60,.5)} /* ballpoint ink */
+.love-q,.love-by{font-family:'Cedarville Cursive', var(--hand);font-weight:400;opacity:.92;text-shadow:0 0 .4px rgba(40,44,60,.5)} /* ballpoint ink */
 .love-q{grid-column:1 / -1;font-size:2.05em;line-height:1.25}
 .love-leave{word-spacing:-.04em;margin-right:.24em} /* 'Leave a' and the heart sit close, like one handwritten phrase */
 .love-btn{font:inherit;position:relative;display:inline-block;vertical-align:-.12em;margin:0 .02em 0 0;width:.95em;height:.86em;padding:0;border:0;background:none;cursor:pointer;transition:transform .12s}
@@ -114,7 +114,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .love-btn[disabled]{cursor:default}
 .love-n{font-size:.8em;vertical-align:baseline;margin-left:.22em;white-space:nowrap} /* the count, beside the heart */
 .love-n #loveN{display:inline-block;transform:rotate(-3deg) translateY(1px)}
-.love-by{grid-column:1 / -1;font-size:1.25em;line-height:1.1;padding-top:.7em;color:#3a3e4e;opacity:.85} /* a quiet sign-off under the question and the hearts */
+.love-by{grid-column:1 / -1;font-size:1.1em;line-height:1.1;padding-top:.7em;color:#3a3e4e;opacity:.85} /* a quiet sign-off under the question and the hearts */
 .love-by a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .love-by a:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:4px}
 .love-by a{position:relative;z-index:1}
