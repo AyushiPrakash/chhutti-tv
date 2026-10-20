@@ -1,7 +1,7 @@
 // Screen corners on the photo, in the photo's own pixels (2752 x 1536): TL, TR, BL, BR
 var QUAD = [[958, 508], [1576, 514], [958, 1002], [1576, 986]]; // measured from the dark glass recess edges in room.jpg
 var PW = 2752, PH = 1536, FOCUS_X = 0.45;
-var TV_X = 1267; // middle of the TV set, in photo pixels
+var TV_X = 1267, PHONE_ZOOM = 1.12; // middle of the TV set (photo pixels), and the extra zoom on phones
 
 var on = false, ch = 0, vol = 6, muted = false, ready = false, tuneStart = 0;
 var $ = function (id) { return document.getElementById(id); };
@@ -15,8 +15,12 @@ function fit(){
   var vw = window.innerWidth, vh = window.innerHeight;
   var s = Math.max(vw / PW, vh / PH);
   var ox = (vw - PW * s) * FOCUS_X, oy = (vh - PH * s) * 0.5;
-  // Narrow screens (phones): the photo still fills the whole window, and the TV is kept in the middle
-  if (vw / vh < PW / PH * 0.6) ox = Math.min(0, Math.max(vw - PW * s, vw / 2 - TV_X * s));
+  // Narrow screens (phones): the photo still fills the whole window, and the TV is kept in the middle.
+  // There's a lot of bare wall above the set, so zoom in a touch and let the extra fall off the top.
+  if (vw / vh < PW / PH * 0.6) {
+    s *= PHONE_ZOOM; oy = -(PH * s - vh) * 0.9;
+    ox = Math.min(0, Math.max(vw - PW * s, vw / 2 - TV_X * s));
+  }
   $('stage').style.transform = 'translate(' + ox + 'px,' + oy + 'px) scale(' + s + ')';
   var dst = QUAD;
   var src = [[0,0],[640,0],[0,480],[640,480]];
