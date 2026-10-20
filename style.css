@@ -93,6 +93,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 /* the paper is an inline SVG (.love-paper in index.html): aged ruled notebook paper with grain, age spots and darker
    edges, its top corner ripped away. The rip is roughened with an SVG displacement filter and backed by a frayed fibre band a shade darker than the paper. */
 .love-paper{position:absolute;inset:0;z-index:-1;width:100%;height:100%;overflow:visible;pointer-events:none}
+.love[hidden]{display:none} /* the note can be switched off with the hidden attribute in index.html */
 .love p{margin:0}
 /* soft graphite: grey, a touch see-through, with a faint smudge */
 .love-q,.love-n,.love-by{font-family:var(--kid);opacity:.86;text-shadow:0 0 .6px rgba(60,60,64,.7),.4px .3px 1px rgba(60,60,64,.25)}
