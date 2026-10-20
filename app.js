@@ -1,6 +1,7 @@
 // Screen corners on the photo, in the photo's own pixels (2752 x 1536): TL, TR, BL, BR
 var QUAD = [[958, 508], [1576, 514], [958, 1002], [1576, 986]]; // measured from the dark glass recess edges in room.jpg
 var PW = 2752, PH = 1536, FOCUS_X = 0.45;
+var TV_X = 1267, MIN_SHOW_W = 1000; // middle of the TV set, and the narrowest slice of the photo a phone may show (both in photo pixels)
 
 var on = false, ch = 0, vol = 6, muted = false, ready = false, tuneStart = 0;
 var $ = function (id) { return document.getElementById(id); };
@@ -14,6 +15,12 @@ function fit(){
   var vw = window.innerWidth, vh = window.innerHeight;
   var s = Math.max(vw / PW, vh / PH);
   var ox = (vw - PW * s) * FOCUS_X, oy = (vh - PH * s) * 0.5;
+  // Narrow screens (phones): keep at least MIN_SHOW_W photo pixels across, so the whole TV set shows even at 320px,
+  // and keep the TV centred. If that means the photo no longer fills the height, it sits in the middle.
+  if (vw / s < MIN_SHOW_W) {
+    s = Math.min(s, vw / MIN_SHOW_W);
+    ox = Math.min(0, Math.max(vw - PW * s, vw / 2 - TV_X * s)); oy = (vh - PH * s) * 0.5;
+  }
   $('stage').style.transform = 'translate(' + ox + 'px,' + oy + 'px) scale(' + s + ')';
   var dst = QUAD;
   var src = [[0,0],[640,0],[0,480],[640,480]];
