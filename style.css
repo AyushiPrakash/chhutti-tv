@@ -74,6 +74,11 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .rk:focus-visible{outline:2px solid var(--osd);outline-offset:1px}
 .hint{position:fixed;left:max(20px, env(safe-area-inset-left, 0px));bottom:20px;margin:0;font-size:13px;color:var(--ink);background:rgba(25,14,6,.62);padding:8px 12px;border-radius:8px;max-width:min(60ch, calc(100% - 220px));line-height:1.5;transition:opacity .6s}
 .hint.fade{opacity:0}
+/* credit, top left: muted serif, the name lighter with a wavy green underline */
+.credit{position:fixed;left:max(20px, env(safe-area-inset-left, 0px));top:20px;z-index:6;margin:0;font:400 17px/1.3 'Crimson Pro', Georgia, serif;color:#9a948a;background:rgba(25,14,6,.62);padding:6px 12px 8px;border-radius:8px}
+.credit a{color:#e4ded3;text-decoration:underline wavy #7fa77f;text-decoration-thickness:1.5px;text-underline-offset:5px}
+.credit a:hover{color:#fff}
+.credit a:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:2px}
 .hint kbd{font-family:var(--mono);font-size:16px;border:1px solid #5a4a3a;border-radius:4px;padding:0 5px}
 .now{font-family:var(--mono);font-size:22px;color:var(--ink-dim);min-height:1.2em;text-align:center}
 .remote.dragging{cursor:grabbing}
