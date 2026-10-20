@@ -112,7 +112,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 @keyframes lovePop{40%{transform:scale(1.25) rotate(-6deg)}100%{transform:scale(1)}}
 .love-btn:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:6px}
 .love-btn[disabled]{cursor:default}
-.love-n{font-size:.8em;vertical-align:baseline;margin-left:.22em;white-space:nowrap} /* the count, beside the heart */
+.love-n{font-size:calc(.8em - 2px);vertical-align:baseline;margin-left:.08em;white-space:nowrap} /* the count, beside the heart */
 .love-n #loveN{display:inline-block;transform:rotate(-3deg) translateY(1px)}
 .love-by{grid-column:1 / -1;font-size:1.3em;line-height:1.1;padding-top:.7em;color:#3a3e4e;opacity:.85} /* a quiet sign-off under the question and the hearts */
 .love-by a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
