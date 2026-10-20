@@ -118,12 +118,12 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .love-by a:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:4px}
 .love-by a{position:relative;z-index:1}
 /* masking tape across the top-left corner, with torn ends */
-.love-tape{position:absolute;left:-2.6em;top:.1em;width:8.5em;height:2.3em;transform:rotate(-27deg);pointer-events:none;
+.love-tape{position:absolute;z-index:2;left:-2.6em;top:.1em;width:8.5em;height:2.3em;transform:rotate(-27deg);pointer-events:none;
   background:linear-gradient(rgba(226,214,186,.62),rgba(206,190,156,.55));box-shadow:0 1px 2px rgba(40,25,10,.15);
   clip-path:polygon(0 8%,4% 0,8% 10%,12% 2%,88% 0,92% 9%,96% 1%,100% 10%,100% 90%,96% 100%,92% 91%,88% 99%,12% 100%,8% 90%,4% 98%,0 92%)}
 /* stickers: a white die-cut edge (stacked white shadows) and a soft drop shadow, each slightly turned */
 .love-st{position:absolute;pointer-events:none;filter:drop-shadow(0 0 .05em #efe3c8) drop-shadow(0 0 .05em #efe3c8) drop-shadow(0 0 .06em #efe3c8) drop-shadow(0 .06em .08em rgba(30,18,8,.3)) saturate(.78) sepia(.18) brightness(.94)} /* toned into the room's warm light */
-.st-flower{left:.9em;top:.2em;width:2em;transform:rotate(-14deg)}
+.st-flower{left:.9em;top:.25em;width:2em;transform:rotate(-14deg);z-index:3;opacity:.95;filter:drop-shadow(0 0 .03em rgba(240,230,205,.8)) sepia(.25) brightness(.95)} /* an old, rubbed sticker stuck on the tape */
 .st-smile{left:-1.5em;top:54%;width:2.9em;transform:rotate(-8deg)}
 .st-bubbles{right:-2.9em;bottom:-2em;width:4.4em;transform:rotate(-6deg)}
 /* picture stickers already have their white border, so they only get the shadow and the room's warm tone */
