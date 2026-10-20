@@ -82,6 +82,10 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
   background:rgba(25,14,6,.45);color:rgba(239,227,207,.75);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s,color .2s}
 .remote.dragging .rk{cursor:grabbing}
 @media (max-width:640px){.remote{height:40vh;right:2vw;bottom:-8vh}.hint{display:none}}
+/* tall screens: the room sits in the upper part (see fit() in app.js); soften its top and bottom edges into the background */
+.tall .scene::before,.tall .scene::after{content:"";position:absolute;left:0;right:0;height:48px;z-index:2;pointer-events:none}
+.tall .scene::before{top:var(--room-top);background:linear-gradient(#2a1a10,rgba(42,26,16,0))}
+.tall .scene::after{top:calc(var(--room-bottom) - 48px);background:linear-gradient(rgba(42,26,16,0),#2a1a10)}
 .tube.bw .video{filter:brightness(1.12) grayscale(1) contrast(1.15) blur(.5px)}
 @media (prefers-reduced-motion:reduce){.roll{animation:none}.tube.glitch .video,.tube.glitch .nosig,.tube.glitch .tear{animation:none}.tube.on,.tube.off{animation-duration:.01s}}
 /* still film grain over the whole scene: grey noise centred on mid-grey in overlay mode, so colours and brightness stay the same on average */
