@@ -142,8 +142,12 @@ function showVol(){
 // picture for about 3 seconds after a video starts, so a preloaded neighbour is clean by the time
 // you switch to it, and channel up/down is near instant. A channel that wasn't preloaded
 // (typed on the number keys) shows snow until its button has faded.
-var ICON_MS = 3200, MIN_SNOW = 120;
-var REACH = matchMedia('(pointer: fine) and (min-width: 700px)').matches ? 2 : 1, SLOTS = 1 + 2 * REACH;
+var ICON_MS = 3200, EARLY_MS = 1000, MIN_SNOW = 120;
+// The picture is shown EARLY_MS after a video starts; until ICON_MS, a small patch of static in the middle of the
+// screen (#iconCover) hides YouTube's pause icon, like a bit of weak signal.
+var DESK = matchMedia('(pointer: fine) and (min-width: 700px)').matches;
+// REACH: channels kept running on each side. RECENT: channels you visited lately, kept running so going back is instant.
+var REACH = DESK ? 2 : 1, RECENT = DESK ? 3 : 0, SLOTS = 1 + 2 * REACH + RECENT, recent = [];
 var P = [], cur = null, readyCount = 0;
 // Join each show partway through, like live TV, by starting there directly.
 var DUR = {};
@@ -190,11 +194,11 @@ function onState(s, st){
   }
 }
 function isLive(s){ return s && s.ready && s.yt.getPlayerState && s.yt.getPlayerState() === YT.PlayerState.PLAYING; }
-function clean(s){ var c = isLive(s) && s.playStart && Date.now() - s.playStart >= ICON_MS; if (c) s.wasClean = true; return c; }
+function clean(s){ var c = isLive(s) && s.playStart && Date.now() - s.playStart >= EARLY_MS; if (c) s.wasClean = true; return c; }
 // a channel can list backup videos (alt) for when YouTube refuses to play the main one
 function ids(c){ return [CHANNELS[c].id].concat(CHANNELS[c].alt || []); }
 function loadInto(s, c){
-  s.ch = c; s.alt = 0; s.playStart = 0; s.loadedAt = Date.now(); s.tries = 0; s.wasClean = false;
+  s.ch = c; s.alt = 0; s.playStart = 0; s.loadedAt = Date.now(); s.tries = 0; s.wasClean = false; s.usedAt = Date.now();
   s.yt.mute(); playId(s);
 }
 function playId(s){ var id = ids(s.ch)[s.alt]; s.id = id; s.end = s.alt === 0 ? CHANNELS[s.ch].end || 0 : 0; s.yt.loadVideoById({ videoId: id, startSeconds: startAt(id, s.end) }); }
@@ -211,15 +215,18 @@ function slotFor(c){ for (var i = 0; i < P.length; i++) if (P[i].ch === c) retur
 // put channel c in a player that isn't needed for any of the wanted channels
 function claim(c, want){
   var s = slotFor(c); if (s) return s;
-  for (var i = 0; i < P.length; i++) if (want.indexOf(P[i].ch) < 0 && P[i] !== cur) { loadInto(P[i], c); return P[i]; }
-  for (i = 0; i < P.length; i++) if (want.indexOf(P[i].ch) < 0) { loadInto(P[i], c); return P[i]; }
-  return null;
+  // reuse the player that was used least recently
+  var pick = null;
+  P.forEach(function(p){ if (want.indexOf(p.ch) < 0 && p !== cur && (!pick || (p.usedAt || 0) < (pick.usedAt || 0))) pick = p; });
+  if (!pick) P.forEach(function(p){ if (want.indexOf(p.ch) < 0 && (!pick || (p.usedAt || 0) < (pick.usedAt || 0))) pick = p; });
+  if (pick) loadInto(pick, c);
+  return pick;
 }
 // channel c and its nearest REACH neighbours on each side, nearest first
 function around(c){
   var want = [c], up = c, down = c;
   for (var k = 0; k < REACH; k++) { up = neighbour(up, 1); down = neighbour(down, -1); want.push(up, down); }
-  return want.filter(function(x, i, a){ return hasShow(x) && a.indexOf(x) === i; });
+  return want.concat(recent).filter(function(x, i, a){ return hasShow(x) && a.indexOf(x) === i; });
 }
 function preloadAround(c){
   if (!ready) return;
@@ -229,7 +236,7 @@ function preloadAround(c){
 // before the TV is switched on, get the starting channel and its neighbours going
 function warm(){ preloadAround(hasShow(ch) ? ch : neighbour(ch, 1)); }
 function setCur(s){
-  cur = s;
+  cur = s; if (s) s.usedAt = Date.now();
   P.forEach(function(p){ p.el.classList.toggle('cur', p === s); });
   applyVolume();
 }
@@ -242,7 +249,7 @@ function applyVolume(){
   });
 }
 function tune(n){
-  if (n !== ch) prevCh = ch;
+  if (n !== ch) { prevCh = ch; if (RECENT && hasShow(ch)) { recent = [ch].concat(recent.filter(function(x){ return x !== ch && x !== n; })).slice(0, RECENT); } }
   ch = n; userPaused = false;
   $('tube').classList.remove('live');
   setNoSignal(false); setStatic(true); showCh(); tuneStart = Date.now();
@@ -262,6 +269,16 @@ setInterval(function(){
   if (!on || !cur || userPaused || !hasShow(ch) || $('tube').classList.contains('live')) return;
   if (Date.now() - tuneStart >= MIN_SNOW && clean(cur)) reveal();
 }, 50);
+// Cover YouTube's pause icon with a patch of static while it's showing (from EARLY_MS to ICON_MS after a start).
+(function(){
+  var c = $('iconCover'), x = c.getContext('2d'), img = x.createImageData(c.width, c.height), d = img.data, shown = false;
+  (function draw(){
+    var want = on && cur && $('tube').classList.contains('live') && cur.playStart && Date.now() - cur.playStart < ICON_MS;
+    if (want !== shown) { shown = want; c.classList.toggle('show', want); }
+    if (want) { for (var i = 0; i < d.length; i += 4) { var v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } x.putImageData(img, 0, 0); }
+    requestAnimationFrame(draw);
+  })();
+})();
 // A channel with an end time loops back to the start when it gets there, like the end of a tape.
 setInterval(function(){
   if (!ready) return;
