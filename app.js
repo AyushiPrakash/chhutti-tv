@@ -1,7 +1,6 @@
 // Screen corners on the photo, in the photo's own pixels (2752 x 1536): TL, TR, BL, BR
 var QUAD = [[958, 508], [1576, 514], [958, 1002], [1576, 986]]; // measured from the dark glass recess edges in room.jpg
 var PW = 2752, PH = 1536, FOCUS_X = 0.45;
-var PORTRAIT_X = [700, 1850]; // the part of the photo a phone shows across its width: calendar, TV, cabinet
 
 var on = false, ch = 0, vol = 6, muted = false, ready = false, tuneStart = 0;
 var $ = function (id) { return document.getElementById(id); };
@@ -15,16 +14,6 @@ function fit(){
   var vw = window.innerWidth, vh = window.innerHeight;
   var s = Math.max(vw / PW, vh / PH);
   var ox = (vw - PW * s) * FOCUS_X, oy = (vh - PH * s) * 0.5;
-  // Tall screens (phones): covering the window would zoom right into the glass. Instead fit the TV and what's
-  // around it (PORTRAIT_X, in photo pixels) to the width and sit the room in the upper part; the remote and
-  // the note take the space below.
-  var tall = vw / vh < 0.8, ps = vw / (PORTRAIT_X[1] - PORTRAIT_X[0]);
-  document.body.classList.toggle('tall', tall);
-  if (tall && PH * ps < vh * 0.62) {
-    s = ps; ox = -PORTRAIT_X[0] * s; oy = Math.max(0, (vh * 0.62 - PH * s) / 2);
-  }
-  // where the photo's top and bottom edges fall, so CSS can fade them into the background on tall screens
-  $('scene').style.setProperty('--room-top', oy + 'px'); $('scene').style.setProperty('--room-bottom', (oy + PH * s) + 'px');
   $('stage').style.transform = 'translate(' + ox + 'px,' + oy + 'px) scale(' + s + ')';
   var dst = QUAD;
   var src = [[0,0],[640,0],[0,480],[640,480]];
