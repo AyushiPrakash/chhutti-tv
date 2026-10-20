@@ -88,7 +88,7 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:6;pointer-events:none;mix-blend-mode:overlay;opacity:.16;background-size:256px 256px}
 /* "Felt nostalgic?" heart box: a scrap torn off a sheet of white ruled notebook paper, one corner ripped away on a
    jagged diagonal, written in a child's pencil hand, with a pencil heart that gets coloured in when tapped */
-.love{position:fixed;left:max(calc(1em + 10px), env(safe-area-inset-left, 0px));bottom:26px;z-index:7;display:grid;justify-content:start;margin:0;padding:2.1em 3.8em 1.6em 2em;
+.love{position:fixed;left:max(calc(1em + 10px), env(safe-area-inset-left, 0px));bottom:26px;z-index:7;display:grid;justify-content:start;margin:0;padding:2.1em 5.4em 1.6em 2em;
   font-size:clamp(9.5px, .6vw + 3px, 16px); /* everything on the note is in em, so it grows and shrinks with the screen */
   color:#2e3242;transform:rotate(-4deg);-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 5px rgba(20,10,4,.45)) drop-shadow(0 1px 1px rgba(20,10,4,.35))}
 /* the paper is an inline SVG (.love-paper in index.html): aged ruled notebook paper with grain, age spots and darker
