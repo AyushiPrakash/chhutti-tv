@@ -88,7 +88,8 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:6;pointer-events:none;mix-blend-mode:overlay;opacity:.16;background-size:256px 256px}
 /* "Felt nostalgic?" heart box: a scrap torn off a sheet of white ruled notebook paper, one corner ripped away on a
    jagged diagonal, written in a child's pencil hand, with a pencil heart that gets coloured in when tapped */
-.love{position:fixed;left:max(18px, env(safe-area-inset-left, 0px));bottom:22px;z-index:7;display:grid;grid-template-columns:auto 1fr;justify-content:start;align-items:center;column-gap:8px;margin:0;padding:30px 54px 12px 22px;
+.love{position:fixed;left:max(calc(1.4em + 10px), env(safe-area-inset-left, 0px));bottom:26px;z-index:7;display:grid;grid-template-columns:auto 1fr;justify-content:start;align-items:center;column-gap:.5em;margin:0;padding:1.875em 3.375em .9em 1.375em;
+  font-size:clamp(13px, 1vw + 6px, 24px); /* everything on the note is in em, so it grows and shrinks with the screen */
   color:#3f4048;transform:rotate(-4deg);-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 5px rgba(20,10,4,.45)) drop-shadow(0 1px 1px rgba(20,10,4,.35))}
 /* the paper is an inline SVG (.love-paper in index.html): aged ruled notebook paper with grain, age spots and darker
    edges, its top corner ripped away. The rip is roughened with an SVG displacement filter and backed by a frayed fibre band a shade darker than the paper. */
@@ -97,8 +98,8 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 .love p{margin:0}
 /* soft graphite: grey, a touch see-through, with a faint smudge */
 .love-q,.love-n,.love-by{font-family:var(--kid);opacity:.86;text-shadow:0 0 .6px rgba(60,60,64,.7),.4px .3px 1px rgba(60,60,64,.25)}
-.love-q{grid-column:1 / -1;font-size:27px;line-height:24px;margin-bottom:2px}
-.love-btn{position:relative;flex:none;width:30px;height:27px;padding:0;border:0;background:none;cursor:pointer;transition:transform .12s}
+.love-q{grid-column:1 / -1;font-size:1.6875em;line-height:.89;margin-bottom:.08em}
+.love-btn{position:relative;flex:none;width:1.875em;height:1.6875em;padding:0;border:0;background:none;cursor:pointer;transition:transform .12s}
 .love-btn svg{width:100%;height:100%;overflow:visible}
 .love-btn .ink{fill:none;stroke:#55545a;opacity:.85;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .love-btn .fill{fill:#e0364a;opacity:0;transform-box:fill-box;transform-origin:50% 55%}
@@ -110,15 +111,26 @@ body{background:#2a1a10;color:var(--ink);font-family:var(--body)}
 @keyframes lovePop{40%{transform:scale(1.25) rotate(-6deg)}100%{transform:scale(1)}}
 .love-btn:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:6px}
 .love-btn[disabled]{cursor:default}
-.love-n{font-size:25px;line-height:24px;color:#3f4048;min-width:3ch;white-space:nowrap}
+.love-n{font-size:1.5625em;line-height:.96;color:#3f4048;min-width:3ch;white-space:nowrap}
 .love-n #loveN{display:inline-block;transform:rotate(-3deg) translateY(1px)}
-.love-by{grid-column:1 / -1;font-size:17px;line-height:18px;margin-top:10px;color:#3f4048;opacity:.62} /* a quiet sign-off under the question and the hearts */
+.love-by{grid-column:1 / -1;font-size:1.0625em;line-height:1.06;margin-top:.6em;color:#3f4048;opacity:.62} /* a quiet sign-off under the question and the hearts */
 .love-by a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .love-by a:focus-visible{outline:2px dashed #1f3b8f;outline-offset:2px;border-radius:4px}
+.love-by a{position:relative;z-index:1}
+/* masking tape across the top-left corner, with torn ends */
+.love-tape{position:absolute;left:-1.6em;top:-.2em;width:6.4em;height:1.7em;transform:rotate(-24deg);pointer-events:none;
+  background:linear-gradient(rgba(236,226,198,.78),rgba(222,208,174,.72));box-shadow:0 1px 2px rgba(40,25,10,.18);
+  clip-path:polygon(0 8%,4% 0,8% 10%,12% 2%,88% 0,92% 9%,96% 1%,100% 10%,100% 90%,96% 100%,92% 91%,88% 99%,12% 100%,8% 90%,4% 98%,0 92%)}
+/* stickers: a white die-cut edge (stacked white shadows) and a soft drop shadow, each slightly turned */
+.love-st{position:absolute;pointer-events:none;filter:drop-shadow(0 0 .04em #fff) drop-shadow(0 0 .04em #fff) drop-shadow(0 0 .05em #fff) drop-shadow(0 .08em .1em rgba(30,18,8,.35))}
+.st-flower{left:-.3em;top:-1.3em;width:2.5em;transform:rotate(-12deg)}
+.st-star{right:4.2em;top:-.6em;width:2.8em;transform:rotate(14deg)}
+.st-smile{left:-1.7em;top:50%;width:2.9em;transform:rotate(-10deg)}
+.st-tv{right:-1em;bottom:-1em;width:3.8em;transform:rotate(9deg)}
 .love-float{position:fixed;z-index:8;pointer-events:none;color:#d42a3a;font-size:20px;text-shadow:0 1px 2px rgba(0,0,0,.25);animation:loveUp 1.2s ease-out forwards}
 @keyframes loveUp{0%{opacity:0;transform:translate(0,0) scale(.6) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translate(var(--drift,0px),-80px) scale(1.2) rotate(var(--spin,0deg))}}
 @media (prefers-reduced-motion:reduce){.love-float{animation-duration:.01s}.love-btn,.love-btn.pop,.love-btn .fill{transition:none;animation:none}}
-@media (max-width:640px){.love{bottom:16px;left:12px;padding:26px 44px 10px 18px}.love-q{font-size:24px}}
+@media (max-width:640px){.love{bottom:18px}}
 /* the keyboard hint sits in the top-right corner until it fades */
 .hint{left:auto;right:max(20px, env(safe-area-inset-right, 0px));top:20px;bottom:auto}
 
