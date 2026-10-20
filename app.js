@@ -143,8 +143,8 @@ function showVol(){
 // you switch to it, and channel up/down is near instant. A channel that wasn't preloaded
 // (typed on the number keys) shows snow until its button has faded.
 var ICON_MS = 3200, EARLY_MS = 1000, MIN_SNOW = 120;
-// The picture is shown EARLY_MS after a video starts; until ICON_MS, a small patch of static in the middle of the
-// screen (#iconCover) hides YouTube's pause icon, like a bit of weak signal.
+// The picture is shown EARLY_MS after a video starts; until ICON_MS, static over the picture (#iconCover) fades
+// away, like the signal settling, and hides YouTube's pause icon.
 var DESK = matchMedia('(pointer: fine) and (min-width: 700px)').matches;
 // REACH: channels kept running on each side. RECENT: channels you visited lately, kept running so going back is instant.
 var REACH = DESK ? 2 : 1, RECENT = DESK ? 3 : 0, SLOTS = 1 + 2 * REACH + RECENT, recent = [];
@@ -269,13 +269,15 @@ setInterval(function(){
   if (!on || !cur || userPaused || !hasShow(ch) || $('tube').classList.contains('live')) return;
   if (Date.now() - tuneStart >= MIN_SNOW && clean(cur)) reveal();
 }, 50);
-// Cover YouTube's pause icon with a patch of static while it's showing (from EARLY_MS to ICON_MS after a start).
+// The signal settles: from EARLY_MS to ICON_MS after a start, static over the whole picture fades from strong to
+// nothing, which also buries YouTube's pause icon while it's showing.
 (function(){
-  var c = $('iconCover'), x = c.getContext('2d'), img = x.createImageData(c.width, c.height), d = img.data, shown = false;
+  var c = $('iconCover'), x = c.getContext('2d'), img = x.createImageData(c.width, c.height), d = img.data, last = -1;
   (function draw(){
-    var want = on && cur && $('tube').classList.contains('live') && cur.playStart && Date.now() - cur.playStart < ICON_MS;
-    if (want !== shown) { shown = want; c.classList.toggle('show', want); }
-    if (want) { for (var i = 0; i < d.length; i += 4) { var v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } x.putImageData(img, 0, 0); }
+    var t = on && cur && $('tube').classList.contains('live') && cur.playStart ? Date.now() - cur.playStart : Infinity;
+    var o = t < ICON_MS ? 0.82 * Math.pow(1 - Math.max(0, t - EARLY_MS) / (ICON_MS - EARLY_MS), 0.6) : 0;
+    if (o !== last) { c.style.opacity = o.toFixed(3); last = o; }
+    if (o > 0) { for (var i = 0; i < d.length; i += 4) { var v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } x.putImageData(img, 0, 0); }
     requestAnimationFrame(draw);
   })();
 })();
